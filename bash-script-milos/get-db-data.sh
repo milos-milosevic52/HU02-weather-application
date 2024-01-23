@@ -19,6 +19,17 @@
 API_KEY="a889fa2bffa32a36daedfe34e5f7c7e8"
 response=$(curl -s "https://api.openweathermap.org/data/2.5/weather?lat=47.55&lon=7.58&appid=${API_KEY}")
  
+
+# Check ob der Server läuft bevor das Script gestartet wird. Falls nicht, wird das Script abgebrochen. 
+# $? -eq 0 ist ein Standart Unix Command der checkt ob der letzte Command funktioniert. 
+if [ $? -eq 0 ]; then
+    echo "Server ist fit und munter! Starte script..."
+else
+    echo "Server kaputt! Abbruch!"
+    exit 1
+fi
+
+
 # JSON Array konvertieren und Output abrufen
 name=$(echo $response | jq -r '.name')
 weather_description=$(echo $response | jq -r '.weather[0].description')
