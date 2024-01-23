@@ -17,12 +17,15 @@ response=$(curl -s "https://api.openweathermap.org/data/2.5/weather?lat=47.55&lo
  
 # Check ob der Server läuft bevor das Script gestartet wird. Falls nicht, wird das Script abgebrochen. 
 # $? -eq 0 ist ein Standart Unix Command der checkt ob der letzte Command funktioniert. 
-if [ $? -eq 0 ]; then
+
+checkIfServerOnline(){
+    if [ $? -eq 0 ]; then
     echo "Server ist fit und munter! Starte script..."
 else
     echo "Server kaputt! Abbruch!"
     exit 1
 fi
+}
 
 # JSON Array konvertieren und Output abrufen
 name=$(echo $response | jq -r '.name')
@@ -53,8 +56,11 @@ mysql -h $db_host -u user02 -p$db_pass weather-app-milari -e "$sql_code"
 # Email die gesendet wird bei extremen Wetter. Ich selbst konnte definieren was ich dazu verwende und wie kalt oder warm es werden muss um auf extrem eingestuft zu werden.
 # Die Email musste eine sein die keine 2FA nutzt um das Login zu ermöglichen. 
 # Dazu wird ssmpt und mail-utilities genutzt. Mehr info dazu in meiner Doku. 
-if (( $(echo "$feels_like_c > 17" | bc -l) )); then
+
+sendMailWithMessage() {
+    if (( $(echo "$feels_like_c > 17" | bc -l) )); then
   mail -s 'WARNUNG: T-Shirt Wetter!!' -a From:\<milos52mil@smart-mail.de\> milos.milosevic@edu.tbz.ch <<< "Es ist ${temp_c} C, gefuehlt wird es: ${feels_like_c} C, Sichtbarkei: ${visibility} m, Wind: ${wind_speed} m/s, Feuchtigkeit: ${main_huminity}%, Wetter beschreibung: ${weather_description} Deswegen müssen sie sich keine Sorge machen und der Sommer kann starten!"
 elif (( $(echo "$feels_like_c < 8" | bc -l) )); then
   mail -s 'WARNUNG: Gute Jacke anziehen!' -a From:\<milos52mil@smart-mail.de\> milos.milosevic@edu.tbz.ch <<< "Es ist ${temp_c} C, gefuehlt wird es: ${feels_like_c} C, Sichtbarkei: ${visibility} m, Wind: ${wind_speed} m/s, Feuchtigkeit: ${main_huminity}%, Wetter beschreibung: ${weather_description} Es wird sehr kalt, lieber zu Hause bleiben!"
 fi
+}
