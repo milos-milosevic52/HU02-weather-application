@@ -2,7 +2,7 @@
 
 # Autor: Milos Milosevic
 # Datum: 23.01.2024
-# Version: 1.1
+# Version: 1.2
 # Beschreibung: 
 # Bash script das sich Daten in Form eines JSOn Array's von einem API Provider hollt und diese in eine          
 # mysql Datenbank einfügt. Im Script werden auch die nötigen Passwörter sowie Nutzernamen für das Login       
@@ -10,16 +10,11 @@
 # In meiner Doku finden Sie mehr zum jq tool. 
 
 
-
-
-
-
 # API Call von Provider
 # Provider: https://openweathermap.org/
 API_KEY="a889fa2bffa32a36daedfe34e5f7c7e8"
 response=$(curl -s "https://api.openweathermap.org/data/2.5/weather?lat=47.55&lon=7.58&appid=${API_KEY}")
  
-
 # Check ob der Server läuft bevor das Script gestartet wird. Falls nicht, wird das Script abgebrochen. 
 # $? -eq 0 ist ein Standart Unix Command der checkt ob der letzte Command funktioniert. 
 if [ $? -eq 0 ]; then
@@ -28,7 +23,6 @@ else
     echo "Server kaputt! Abbruch!"
     exit 1
 fi
-
 
 # JSON Array konvertieren und Output abrufen
 name=$(echo $response | jq -r '.name')
