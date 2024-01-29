@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:nsd="https://structorizer.fisch.lu" version="3.32-11" preRepeat="until " postFor="to" preReturn="return" postForIn="in" preWhile="while " output="OUTPUT" input="INPUT" preFor="for" preExit="exit" preLeave="leave" ignoreCase="true" preThrow="throw" preForIn="foreach" stepFor="by" author="TAAMIMIJ" created="2024-01-23" changedby="TAASHAR4" changed="2024-01-29" origin="Structorizer 3.32-11" text="&#34;main.sh&#34;,&#34;&#34;,&#34;API_json=$(curl -s 'https://api.openweathermap.org/data/2.5/weather?lat=47.36&amp;lon=8.55&amp;appid=a889fa2bffa32a36daedfe34e5f7c7e8')&#34;" comment="" color="ffffff" type="program" style="nice">
+	<children>
+		<alternative text="&#34;Wenn API nicht erreichbar ist&#34;,&#34;if [ $? -ne 0 ]; then&#34;" comment="" color="ffffff" disabled="0">
+			<qTrue>
+				<instruction text="&#34;echo &#34;&#34;Fehler: API ist nicht erreichbar&#34;&#34; &#62;&amp;2&#34;,&#34;exit 1&#34;" comment="" color="ffffff" rotated="0" disabled="0"></instruction>
+			</qTrue>
+			<qFalse>
+				<instruction text="&#34;name=$(echo &#34;&#34;$API_json&#34;&#34; | jq -r '.name')&#34;,&#34;weather_description=$(echo &#34;&#34;$API_json&#34;&#34; | jq -r '.weather[0].description')&#34;,&#34;visibility=$(echo &#34;&#34;$API_json&#34;&#34; | jq -r '.visibility')&#34;,&#34;wind_speed=$(echo &#34;&#34;$API_json&#34;&#34; | jq -r '.wind.speed')&#34;,&#34;main_humidity=$(echo &#34;&#34;$API_json&#34;&#34; | jq -r '.main.humidity')&#34;,&#34;main_temp_k=$(echo &#34;&#34;$API_json&#34;&#34; | jq -r '.main.temp')&#34;,&#34;main_feels_like_k=$(echo &#34;&#34;$API_json&#34;&#34; | jq -r '.main.feels_like')&#34;,&#34;&#34;,&#34;temp_c=$(echo &#34;&#34;$main_temp_k-273.15&#34;&#34; | bc)&#34;,&#34;feels_like_c=$(echo &#34;&#34;$main_feels_like_k-273.15&#34;&#34; | bc)&#34;,&#34;&#34;,&#34;db_host=&#34;&#34;172.16.17.160&#34;&#34;&#34;,&#34;db_user=&#34;&#34;user02&#34;&#34;&#34;,&#34;db_pass=&#34;&#34;MaSq-02&#34;&#34;&#34;,&#34;db_name=&#34;&#34;weather-app-milari&#34;&#34;&#34;,&#34;db_table_name=&#34;&#34;WeatherApp&#34;&#34;&#34;,&#34;&#34;,&#34;sql=&#34;&#34;INSERT INTO ${db_table_name} (name, weather_description, visibility, wind_speed, main_humidity, temp_c, feels_like_c) VALUES ('${name}', '${weather_description}', '${visibility}', '${wind_speed}', '${main_humidity}', '${temp_c}', '${feels_like_c}')&#34;&#34;&#34;,&#34;&#34;,&#34;mysql -h $db_host -u $db_user -p$db_pass $db_name -e &#34;&#34;$sql&#34;&#34;&#34;" comment="" color="ffffff" rotated="0" disabled="0"></instruction>
+				<alternative text="&#34;Wenn Datenbank nicht erreichbar ist&#34;,&#34;if [ $? -ne 0 ]; then&#34;" comment="" color="ffffff" disabled="0">
+					<qTrue>
+						<instruction text="&#34;echo &#34;&#34;Fehler: Datenbank ist nicht erreichbar&#34;&#34; &#62;&amp;2&#34;,&#34;exit 1&#34;" comment="" color="ffffff" rotated="0" disabled="0"></instruction>
+					</qTrue>
+					<qFalse>
+						<case text="&#34;Temparatur überprüfen&#34;,&#34;elif (( $(echo &#34;&#34;$temp_c &#60; 10&#34;&#34; | bc -l) )); then&#34;,&#34;if (( $(echo &#34;&#34;$temp_c &#62; 18&#34;&#34; | bc -l) )); then&#34;,&#34;default&#34;" comment="" color="ffffff" disabled="0">
+							<qCase>
+								<instruction text="&#34;mail -s 'ACHTUNG: Kaltes Wetter' -a From:\&#60;arian89sh08@smart-mail.de\&#62; arian.shkodra@edu.tbz.ch &#60;&#60;&#60; &#34;&#34;E-Mail Inhalt&#34;&#34;&#34;" comment="&#34;&#34;" color="ffffff" rotated="0" disabled="0"></instruction>
+							</qCase>
+							<qCase>
+								<instruction text="&#34;mail -s 'ACHTUNG: Warmes Wetter' -a From:\&#60;arian89sh08@smart-mail.de\&#62; arian.shkodra@edu.tbz.ch &#60;&#60;&#60; &#34;&#34;E-Mail Inhalt&#34;&#34;&#34;" comment="&#34;&#34;" color="ffffff" rotated="0" disabled="0"></instruction>
+							</qCase>
+							<qCase>
+								<instruction text="&#34;Nichts&#34;" comment="" color="ffffff" rotated="0" disabled="0"></instruction>
+							</qCase>
+						</case>
+					</qFalse>
+				</alternative>
+			</qFalse>
+		</alternative>
+	</children>
+</root>
